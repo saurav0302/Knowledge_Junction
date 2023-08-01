@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CAPTCHA</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 2rem;
+        }
+
+        h1 {
+            color: #800080;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        label {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        input {
+            font-size: 1.6rem;
+            padding: 0.5rem 1rem;
+            margin-bottom: 1rem;
+            width: 10rem;
+            text-align: center;
+        }
+
+        .error-message {
+            color: red;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        .success-message {
+            color: green;
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+        }
+
+        button {
+            font-size: 1.8rem;
+            padding: 0.5rem 2rem;
+            background-color: #800080;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 0.5rem;
+        }
+       
+    </style>
+</head>
+<body>
+    <h1>Verify You're Human</h1>
+    <form action="contact.html">
+        <label for="captcha">Solve the math problem below:</label>
+        <div id="captcha"></div>
+        <input type="text" id="userAnswer" placeholder="Your answer" required>
+        <button type="submit">Submit</button>
+        <div class="error-message" id="errorMessage"></div>
+        <div class="success-message" id="successMessage"></div>
+    </form>
+
+    <script>
+        // Function to generate a random math problem
+        function generateCaptcha() {
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            return `${num1} + ${num2}`;
+        }
+
+        // Function to check the user's answer
+        function checkAnswer(userAnswer, correctAnswer) {
+            return parseInt(userAnswer) === eval(correctAnswer);
+        }
+
+        const captchaDiv = document.getElementById('captcha');
+        const userAnswerInput = document.getElementById('userAnswer');
+        const errorMessageDiv = document.getElementById('errorMessage');
+        const successMessageDiv = document.getElementById('successMessage');
+
+        // Generate a random math problem and display it
+        const captcha = generateCaptcha();
+        captchaDiv.textContent = captcha;
+
+        // Handle form submission
+        document.querySelector('form').addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            // Check user's answer
+            const userAnswer = userAnswerInput.value;
+            if (checkAnswer(userAnswer, captcha)) {
+                // Display success message and reset form
+                successMessageDiv.textContent = 'CAPTCHA Passed! Your Response Has Been Sent. We Will Get Back To You As Soon As Possible';
+                errorMessageDiv.textContent = '';
+                captchaDiv.textContent = generateCaptcha();
+                userAnswerInput.value = '';
+
+                // Redirect back to the contact.html page after a delay
+                setTimeout(() => {
+                    window.location.href = 'contact.html';
+                }, 4000); // Redirect after 4 seconds (adjust the time as needed)
+            } else {
+                // Display error message
+                errorMessageDiv.textContent = 'Incorrect answer. Please try again.';
+            }
+        });
+    </script>
+</body>
+</html>
